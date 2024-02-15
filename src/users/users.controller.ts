@@ -43,8 +43,8 @@ export class UsersController {
   }
 
   @ApiOperation({
-    summary: 'Sistemdeki user ları listeleme',
-    description: 'Get Users List',
+    summary: 'Sistemdeki user type lı kullanıcıları listeleme',
+    description: 'Role = admin | store_management | user',
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RoleGuard)
