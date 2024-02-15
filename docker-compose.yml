@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  nest:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./prisma:/app/prisma
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://your_username:your_password@postgres:5432/your_database
+      SECRET_KEY: "SECRET KEY"
+    command: bash -c "npx prisma db push && npm run start"
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

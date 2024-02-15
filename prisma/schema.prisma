@@ -1,0 +1,63 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  store_management
+  user
+  admin
+}
+
+model users {
+  id           Int       @id @default(autoincrement())
+  created_at   DateTime  @default(now())
+  updated_at   DateTime? @updatedAt
+  firstname    String?
+  lastname     String?
+  password     String?
+  type         UserType  @default(user)
+  email        String    @unique
+  phone_number String?
+  stores       stores[]
+}
+
+model stores {
+  id            Int           @id @default(autoincrement())
+  created_at    DateTime      @default(now())
+  updated_at    DateTime?     @updatedAt
+  name          String?       @unique @db.VarChar(255)
+  management_id Int
+  address       String?
+  phone_number  String?
+  management    users         @relation(fields: [management_id], references: [id])
+  store_books   store_books[]
+}
+
+model books {
+  id          Int           @id @default(autoincrement())
+  created_at  DateTime      @default(now())
+  updated_at  DateTime?     @updatedAt
+  title       String?       @unique @db.VarChar(255)
+  author      String?
+  description String?
+  image_url   String?
+  stock       Int?
+  store_books store_books[]
+}
+
+model store_books {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+  store_id   Int
+  book_id    Int
+  store      stores    @relation(fields: [store_id], references: [id])
+  book       books     @relation(fields: [book_id], references: [id])
+  stock      Int?
+}
